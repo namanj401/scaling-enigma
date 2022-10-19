@@ -1,0 +1,169 @@
+#include <iostream>
+#include <bits/stdc++.h>
+
+using namespace std;
+
+#define ll long long int
+#define ld long double
+#define MAX 200010
+#define MOD 1000000007
+#define INF 1e15
+#define fast ios::sync_with_stdio(0);cin.tie(0);cout.tie(0);
+#define pi 3.14159265358979323846
+#define endl "\n"
+#define coutflg if(flg){cout << "YES\n";}else{cout << "NO\n";}
+#define coutyes cout << "YES\n";
+#define coutno cout << "NO\n";
+#define flush fflush(stdout);
+#define fixedprec cout << fixed << setprecision(18);
+
+ll fun(string a){
+    ll n = a.size();
+    ll res = 0;
+    for(ll i=0;i<n;i++){
+        ll x = a[i]-'0';
+        res *= (ll)10;
+        res += x;
+    }
+    return res;
+}
+
+void solve(){
+    string a;
+    ll k;
+    cin >> a >> k;
+    ll oc = fun(a);
+    ll n = a.size();
+    if(k==1){
+        string fnl = a;
+        for(char i1='0';i1<='9';i1++){
+            for(ll i=0;i<n;i++){
+                fnl[i] = i1;
+            }
+            ll che = fun(fnl);
+            if(che>=oc){
+                cout << fnl << endl;
+                return;
+            }
+        }
+    }
+    string ret = a;
+    for(ll i=0;i<n;i++){
+        ret[i] = '9';
+    }
+    string fnl = a;
+    for(char i1='0';i1<='9';i1++){
+        for(ll i=0;i<n;i++){
+            fnl[i] = i1;
+        }
+        ll che = fun(fnl);
+        if(che>=oc){
+            ret = fnl;
+            break;
+        }
+    }
+    for(char i1='0';i1<='9';i1++){
+        for(char j1='0';j1<='9';j1++){
+            if(i1==j1){
+                continue;
+            }
+            string ans = a;
+            for(ll i=0;i<n;i++){
+                ans[i] = '9';
+            }
+            int won = 0;
+            int lost = 0;
+            ll sp = -1;
+            ll spi1 = -1;
+            ll spj1 = -1;
+            for(ll i=0;i<n;i++){
+                if(a[i]==i1){
+                    spi1 = i;
+                    ans[i] = i1;
+                }
+                else if(a[i]==j1){
+                    spj1 = i;
+                    ans[i] = j1;
+                }
+                else if(a[i]<min(i1,j1)){
+                    won = 1;
+                    ans[i] = min(i1,j1);
+                    sp = i;
+                    break;
+                }
+                else if(a[i]<max(i1,j1)){
+                    won = 1;
+                    ans[i] = max(i1,j1);
+                    sp = i;
+                    break;
+                }
+                else{
+                    lost = 1;
+                    break;
+                }
+            }
+            // if(ans=="221"){
+            //     cout << ans << endl;
+            //     cout << won << endl;
+            //     cout << lost << endl;
+            // }
+            if(won){
+                for(ll i=sp+1;i<n;i++){
+                    ans[i] = min(i1,j1);
+                }
+                ll che = fun(ans);
+                if(che>=oc){
+                    ret = min(ret,ans);
+                }
+            }
+            if(lost){
+                if(i1>j1 && spj1!=-1){
+                    ans[spj1] = i1;
+                    for(ll i=spj1+1;i<n;i++){
+                        ans[i] = min(i1,j1);
+                    }
+                    ll che = fun(ans);
+                    if(che>=oc){
+                        ret = min(ret,ans);
+                    }
+                }
+                else if(j1>i1 && spi1!=-1){
+                    ans[spi1] = j1;
+                    for(ll i=spi1+1;i<n;i++){
+                        ans[i] = min(i1,j1);
+                    }
+                    ll che = fun(ans);
+                    if(che>=oc){
+                        ret = min(ret,ans);
+                    }
+                }
+            }
+            if(!won && !lost){
+                ll che = fun(ans);
+                if(che>=oc){
+                    ret = min(ret,ans);
+                }
+            }
+        }
+    }
+    cout << ret << endl;
+}
+
+int main(){
+
+    #ifndef ONLINE_JUDGE
+        // for getting input from input.txt
+        freopen("input.txt", "r", stdin);
+        // for writing output to output.txt
+        // freopen("output.txt", "w", stdout);
+    #endif
+
+    fast
+    ll t,q;
+    q = 1;
+    cin >> q;
+    for(t=1;t<=q;t++){
+        // cout << "Case #" << t << ": ";
+        solve();
+    }
+}
